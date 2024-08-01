@@ -124,6 +124,36 @@ export const updateProduct = async (req, res) => {
   }
 };
 
+export const getCategoryProduct = async (req, res) => {
+  try {
+    const productCategory = await ProductModel.distinct('category');
+
+    console.log('category', productCategory);
+
+    const productByCategory = [];
+
+    for (const category of productCategory) {
+      const product = await ProductModel.findOne({ category });
+
+      if (product) {
+        productByCategory.push(product);
+      }
+    }
+
+    res.json({
+      data: productByCategory,
+      success: true,
+      error: false,
+    });
+  } catch (err) {
+    res.status(400).json({
+      message: err.message || err,
+      error: true,
+      success: false,
+    });
+  }
+};
+
 export const deleteProduct = async (req, res) => {
   const { idProduct } = req.params;
 

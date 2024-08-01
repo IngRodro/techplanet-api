@@ -30,7 +30,6 @@ export const signIn = async (req, res) => {
   const tokenOptions = {
     httpOnly: true,
     secure: false,
-    sameSite: 'None'
   };
 
   return res.cookie('token', token, tokenOptions).json({

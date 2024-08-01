@@ -1,11 +1,11 @@
 import express from 'express';
 import fileUpload from 'express-fileupload';
 import {
-  getAllProduct,
   createProduct,
   updateProduct,
   deleteProduct,
   getAllProducts,
+  getCategoryProduct,
 } from './product.controller';
 import { TokenValidation } from 'Utils/authentication';
 
@@ -29,6 +29,7 @@ router.put(
   }),
   updateProduct,
 );
+router.get("/get-category-product", getCategoryProduct)
 router.delete('/:idProduct', deleteProduct);
 
 export default router;
