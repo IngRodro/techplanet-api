@@ -4,8 +4,15 @@ import { initializeDB } from './db';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 
+var whitelist = ['http://localhost:3000', 'https://techplanet-webapp.vercel.app']
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   credentials: true
 };
 

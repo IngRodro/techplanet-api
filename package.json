@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec babel-node src/main.js",
-    "start": "node src/main.js",
+    "start": "node public/main.js",
     "build": "babel ./src -d public",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
