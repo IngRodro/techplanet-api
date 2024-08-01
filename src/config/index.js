@@ -12,6 +12,7 @@ const config = () => ({
   Token: {
     secret: process.env.TOKEN_SECRET,
   },
+  origin: process.env.ORIGIN
 });
 
 export default config;
