@@ -3,9 +3,12 @@ import fileUpload from 'express-fileupload';
 import {
   createProduct,
   updateProduct,
-  deleteProduct,
   getAllProducts,
-  getCategoryProduct,
+  getCategories,
+  getProductByCategory,
+  getProductDetails,
+  filterProducts,
+  searchProducts
 } from './product.controller';
 import { TokenValidation } from 'Utils/authentication';
 
@@ -29,7 +32,10 @@ router.put(
   }),
   updateProduct,
 );
-router.get("/get-category-product", getCategoryProduct)
-router.delete('/:idProduct', deleteProduct);
+router.get("/get-categories", getCategories)
+router.post("/products-by-category",getProductByCategory)
+router.post("/get-details", getProductDetails)
+router.post("/filter-products", filterProducts)
+router.get("/search-products", searchProducts)
 
 export default router;

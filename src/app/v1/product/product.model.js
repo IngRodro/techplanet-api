@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { type } from 'os';
 import getModelName from 'Utils/getModelName';
 
 const { Schema } = mongoose;

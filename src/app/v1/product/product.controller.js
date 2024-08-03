@@ -1,11 +1,11 @@
 import fs from 'fs-extra';
-import ProductModel from './product.model';
+import productModel from './product.model';
 import { deleteFile, uploadImages } from '../../../Utils/cloudFile';
 import userModel from '../user/user.model';
 
 export const getAllProducts = async (req, res) => {
   try {
-    const allProduct = await ProductModel.find().sort({ createdAt: -1 });
+    const allProduct = await productModel.find().sort({ createdAt: -1 });
 
     res.json({
       message: 'All Product',
@@ -46,7 +46,7 @@ export const createProduct = async (req, res) => {
     try {
       const result = await uploadImages(productImages, 'techplanet/products');
 
-      const product = await ProductModel.create({
+      const product = await productModel.create({
         productName,
         brandName,
         category,
@@ -86,7 +86,7 @@ export const updateProduct = async (req, res) => {
   }
 
   if (!req.files?.image) {
-    const data = await ProductModel.findOneAndUpdate(
+    const data = await productModel.findOneAndUpdate(
       { _id: idProduct },
       {
         name,
@@ -97,7 +97,7 @@ export const updateProduct = async (req, res) => {
 
   try {
     let image = {};
-    const actualData = await ProductModel.findById(idProduct);
+    const actualData = await productModel.findById(idProduct);
     await deleteFile(actualData.image.public_id);
     const result = await uploadOneFile(
       req.files.image.tempFilePath,
@@ -108,7 +108,7 @@ export const updateProduct = async (req, res) => {
       secure_url: result.secure_url,
     };
     await fs.unlink(req.files.image.tempFilePath);
-    const data = await ProductModel.findOneAndUpdate(
+    const data = await productModel.findOneAndUpdate(
       { _id: idProduct },
       {
         name,
@@ -124,16 +124,14 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-export const getCategoryProduct = async (req, res) => {
+export const getCategories = async (req, res) => {
   try {
-    const productCategory = await ProductModel.distinct('category');
-
-    console.log('category', productCategory);
+    const productCategory = await productModel.distinct('category');
 
     const productByCategory = [];
 
     for (const category of productCategory) {
-      const product = await ProductModel.findOne({ category });
+      const product = await productModel.findOne({ category });
 
       if (product) {
         productByCategory.push(product);
@@ -154,22 +152,98 @@ export const getCategoryProduct = async (req, res) => {
   }
 };
 
-export const deleteProduct = async (req, res) => {
-  const { idProduct } = req.params;
-
+export const getProductByCategory = async (req, res) => {
   try {
-    const actualData = await ProductModel.findById(idProduct);
-    await deleteFile(actualData.image.public_id);
-    const data = await ProductModel.deleteOne({ _id: idProduct });
+    const { category } = req?.body || req?.query;
+    const product = await productModel.find({ category });
 
-    return res.status(200).json({
-      ...data,
-      status: 'inactive',
+    res.json({
+      data: product,
+      success: true,
+      error: false,
     });
-  } catch (error) {
-    return res.status(500).json({
-      code: 500,
-      message: 'Error deleting product',
+  } catch (err) {
+    res.status(400).json({
+      message: err.message || err,
+      error: true,
+      success: false,
+    });
+  }
+};
+
+export const getProductDetails = async (req, res) => {
+  try {
+    const { productId } = req.body;
+
+    const product = await productModel.findById(productId);
+
+    res.json({
+      data: product,
+      success: true,
+      error: false,
+    });
+  } catch (err) {
+    res.json({
+      message: err?.message || err,
+      error: true,
+      success: false,
+    });
+  }
+};
+
+export const filterProducts = async (req, res) => {
+  try {
+    const categoryList = req?.body?.category || [];
+
+    const product = await productModel.find({
+      category: {
+        $in: categoryList,
+      },
+    });
+
+    res.json({
+      data: product,
+      message: 'product',
+      error: false,
+      success: true,
+    });
+  } catch (err) {
+    res.json({
+      message: err.message || err,
+      error: true,
+      success: false,
+    });
+  }
+};
+
+export const searchProducts = async (req, res) => {
+  try {
+    const query = req.query.q;
+
+    const regex = new RegExp(query, 'i', 'g');
+
+    const product = await productModel.find({
+      $or: [
+        {
+          productName: regex,
+        },
+        {
+          category: regex,
+        },
+      ],
+    });
+
+    res.json({
+      data: product,
+      message: 'Search Product list',
+      error: false,
+      success: true,
+    });
+  } catch (err) {
+    res.json({
+      message: err.message || err,
+      error: true,
+      success: false,
     });
   }
 };
