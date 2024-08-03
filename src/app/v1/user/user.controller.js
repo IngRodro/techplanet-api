@@ -28,6 +28,7 @@ export const signIn = async (req, res) => {
   const token = genToken(tokenData);
 
   const tokenOptions = {
+    maxAge: 24 * 60 * 60 * 1000,
     httpOnly: true,
     secure: false,
     sameSite: 'None',
