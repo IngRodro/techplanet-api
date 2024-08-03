@@ -30,6 +30,7 @@ export const signIn = async (req, res) => {
   const tokenOptions = {
     httpOnly: true,
     secure: false,
+    domain: 'https://techplanet-webapp.vercel.app'
   };
 
   return res.cookie('token', token, tokenOptions).json({
