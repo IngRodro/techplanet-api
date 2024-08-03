@@ -4,7 +4,7 @@ import { initializeDB } from './db';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 
-var allowedOrigins  = ['http://localhost:3000', 'https://techplanet-webapp.vercel.app', 'https://techplanet-webapp.onrender.com/']
+var allowedOrigins  = ['http://localhost:3000', 'https://techplanet-webapp.vercel.app', 'https://techplanet-webapp.onrender.com']
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
