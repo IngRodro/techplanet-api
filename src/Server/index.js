@@ -29,11 +29,6 @@ export const initializeServer = async (routes) => {
   // json parse
   app.use(express.json());
   app.use(cookieParser());
-  app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://techplanet-webapp.onrender.com');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    next();
-  });
 
   // set urls
   app.use(routes);
