@@ -5,7 +5,7 @@ import {
   updateProduct,
   getAllProducts,
   getCategories,
-  getProductByCategory,
+  getProductByCategoryOrBrand,
   getProductDetails,
   filterProducts,
   searchProducts
@@ -33,7 +33,7 @@ router.put(
   updateProduct,
 );
 router.get("/get-categories", getCategories)
-router.post("/products-by-category",getProductByCategory)
+router.post("/products-by-category-or-brand",getProductByCategoryOrBrand)
 router.post("/get-details", getProductDetails)
 router.post("/filter-products", filterProducts)
 router.get("/search-products", searchProducts)
