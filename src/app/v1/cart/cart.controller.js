@@ -9,7 +9,7 @@ export const addToCartController = async (req, res) => {
 
     if (isProductAvailable) {
       return res.json({
-        message: 'Already exits in Add to cart',
+        message: 'El Producto ya esta registrado en el carrito',
         success: false,
         error: true,
       });
@@ -26,7 +26,7 @@ export const addToCartController = async (req, res) => {
 
     return res.json({
       data: saveProduct,
-      message: 'Product Added in Cart',
+      message: 'Producto agregado al carrito',
       success: true,
       error: false,
     });
@@ -51,7 +51,6 @@ export const countCartProducts = async (req, res) => {
       data: {
         count: count,
       },
-      message: 'ok',
       error: false,
       success: true,
     });
@@ -122,7 +121,7 @@ export const deleteCartProduct = async (req, res) => {
     });
 
     res.json({
-      message: 'Product Deleted From Cart',
+      message: 'Producto eliminado del carrito',
       error: false,
       success: true,
       data: deleteProduct,
