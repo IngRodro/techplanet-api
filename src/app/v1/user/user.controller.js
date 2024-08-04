@@ -109,7 +109,11 @@ export const test = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    res.clearCookie('token');
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None'
+    });
 
     res.json({
       message: 'Cerró sesión exitosamente',
