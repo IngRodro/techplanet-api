@@ -38,6 +38,6 @@ router.post("/products-by-category-or-brand",getProductByCategoryOrBrand)
 router.post("/get-details", getProductDetails)
 router.post("/filter-products", filterProducts)
 router.get("/search-products", searchProducts)
-router.get("/change-availability", changeAvailability)
+router.put("/change-availability", changeAvailability)
 
 export default router;
