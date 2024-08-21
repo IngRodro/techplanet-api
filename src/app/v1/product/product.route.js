@@ -26,7 +26,7 @@ router.post(
   createProduct,
 );
 router.put(
-  '/:idProduct',
+  '/update-product/:idProduct',
   fileUpload({
     useTempFiles: true,
     tempFileDir: './uploads',
