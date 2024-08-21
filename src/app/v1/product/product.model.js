@@ -42,6 +42,11 @@ const product = new Schema(
       type: Number,
       required: true,
     },
+    available: {
+      type: Boolean,
+      required: false,
+      default: true,
+    }
   },
   {
     timestamps: true,

@@ -252,3 +252,38 @@ export const searchProducts = async (req, res) => {
     });
   }
 };
+
+export const changeAvailability = async (req, res) => {
+  const { productId } = req.body;
+
+  try {
+    const product = await productModel.findOne({ _id: productId });
+
+    if (!product) {
+      return res.json({
+        message: 'Product not found',
+        error: true,
+        success: false,
+      });
+    }
+
+    const newAvailability = !product.available;
+
+    await productModel.updateOne(
+      { _id: productId },
+      { $set: { available: newAvailability } }
+    );
+
+    res.json({
+      message: 'Availability changed successfully',
+      error: false,
+      success: true,
+    });
+  } catch (err) {
+    res.json({
+      message: err.message || err,
+      error: true,
+      success: false,
+    });
+  }
+};
