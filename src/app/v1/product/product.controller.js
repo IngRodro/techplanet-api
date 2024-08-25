@@ -156,7 +156,9 @@ export const getProductByCategoryOrBrand = async (req, res) => {
   try {
     const { category, brand } = req?.body || req?.query;
 
-    let query = {};
+    let query = {
+      available: true
+    };
     if (category) query.category = category;
     if (brand) query.brandName = brand;
 
@@ -204,6 +206,7 @@ export const filterProducts = async (req, res) => {
       category: {
         $in: categoryList,
       },
+      available: true
     });
 
     res.json({
@@ -236,6 +239,7 @@ export const searchProducts = async (req, res) => {
           category: regex,
         },
       ],
+      available: true
     });
 
     res.json({
