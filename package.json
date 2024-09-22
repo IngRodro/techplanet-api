@@ -6,11 +6,12 @@
     "dev": "nodemon --exec babel-node src/main.js",
     "start": "node public/main.js",
     "build": "babel ./src -d public",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format:check": "prettier --check .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test": "cross-env NODE_ENV=test jest --verbose --forceExit",
+    "test:watch": "cross-env NODE_ENV=test jest --verbose --silent --watchAll --forceExit"
   },
   "author": "",
   "license": "ISC",
@@ -38,8 +39,15 @@
     "@babel/preset-env": "^7.25.2",
     "@types/node": "^22.0.0",
     "babel-plugin-module-resolver": "^5.0.2",
+    "cross-env": "^7.0.3",
     "eslint": "^9.8.0",
+    "jest": "^29.7.0",
     "nodemon": "^3.1.4",
-    "prettier": "^3.3.3"
+    "prettier": "^3.3.3",
+    "supertest": "^7.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 30000
   }
 }

@@ -12,16 +12,32 @@ cloudinary.config({
 
 export const uploadOneFile = async (filePath, folder) =>
   cloudinary.uploader.upload(filePath, {
-    folder: `images/${folder}`,
+    folder: process.env.NODE_ENV === 'test' ? `test/${folder}` : `images/${folder}`,
   });
 
-export const deleteFile = async (publicId) =>
-  cloudinary.uploader.destroy(publicId);
+export const deleteFiles = async (publicIds) => {
+  try {
+    // Usa Promise.all para realizar todas las eliminaciones en paralelo
+    const deletePromises = publicIds.map((publicId) =>
+      cloudinary.uploader.destroy(publicId)
+    );
+
+    // Espera a que todas las promesas se resuelvan
+    const results = await Promise.all(deletePromises);
+
+    // Filtra y retorna los resultados exitosos
+    return results;
+  } catch (error) {
+    console.error("Error eliminando archivos:", error);
+    throw error;
+  }
+};
+
 
 export const uploadImages = async (productImages, folder) => {
   const uploadPromises = productImages.map(async (image) => {
     const result = await cloudinary.uploader.upload(image, {
-      folder: `images/${folder}`
+      folder: process.env.NODE_ENV === 'test' ? `test/${folder}` : `images/${folder}`
     });
     return { public_id: result.public_id, secure_url: result.secure_url }
   });

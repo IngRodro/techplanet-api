@@ -1,12 +1,11 @@
 import express from 'express';
-import { signUp, signIn, updateUser, getAllUsers, logout, getUserDetails, test } from './user.controller';
+import { signUp, signIn, updateUser, getAllUsers, logout, getUserDetails } from './user.controller';
 import { TokenValidation } from '../../../Utils/authentication';
 import fileUpload from 'express-fileupload';
 
 const router = express.Router();
 
 router.post("/signup", signUp)
-router.get("/test" , test)
 router.post("/signin", signIn)
 router.get("/user-details", TokenValidation, fileUpload({
   useTempFiles: true,

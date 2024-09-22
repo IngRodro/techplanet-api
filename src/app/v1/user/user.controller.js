@@ -94,17 +94,12 @@ export const signUp = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       message: error.message || error,
       error: true,
       success: false,
     });
   }
-};
-
-export const test = async (req, res) => {
-  return res.json({ test: 'Esto es una prueba' });
 };
 
 export const logout = async (req, res) => {
@@ -148,8 +143,6 @@ export const updateUser = async (req, res) => {
         });
       }
     }
-
-    console.log(userId);
 
     const payload = {
       ...(email && { email: email }),

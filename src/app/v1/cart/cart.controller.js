@@ -115,7 +115,6 @@ export const updateCartProduct = async (req, res) => {
 export const deleteCartProduct = async (req, res) => {
   try {
     const cartProductId = req.body._id;
-    console.log(cartProductId)
     const deleteProduct = await cartModel.deleteOne({
       _id: cartProductId,
     });

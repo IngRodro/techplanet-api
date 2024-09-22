@@ -1,6 +1,5 @@
-import fs from 'fs-extra';
 import productModel from './product.model';
-import { deleteFile, uploadImages } from '../../../Utils/cloudFile';
+import { deleteFiles, uploadImages } from '../../../Utils/cloudFile';
 import userModel from '../user/user.model';
 
 export const getAllProducts = async (req, res) => {
@@ -76,53 +75,94 @@ export const createProduct = async (req, res) => {
 };
 
 export const updateProduct = async (req, res) => {
-  const { idProduct } = req.params;
-  const { name } = req.body;
+  const {
+    id,
+    productName,
+    brandName,
+    category,
+    description,
+    price,
+    sellingPrice,
+    newImages, // Imágenes nuevas (en base64 o formato de archivo)
+    deletedImages, // Imágenes a eliminar (con sus `public_id`)
+  } = req.body;
 
-  if (!name) {
-    return res.status(400).json({
-      message: 'All fields are required',
-    });
-  }
-
-  if (!req.files?.image) {
-    const data = await productModel.findOneAndUpdate(
-      { _id: idProduct },
-      {
-        name,
-      },
-    );
-    return res.status(200).json(data);
-  }
+  const { userId } = req;
 
   try {
-    let image = {};
-    const actualData = await productModel.findById(idProduct);
-    await deleteFile(actualData.image.public_id);
-    const result = await uploadOneFile(
-      req.files.image.tempFilePath,
-      'products',
-    );
-    image = {
-      public_id: result.public_id,
-      secure_url: result.secure_url,
-    };
-    await fs.unlink(req.files.image.tempFilePath);
-    const data = await productModel.findOneAndUpdate(
-      { _id: idProduct },
+    // Verificar que el usuario sea un administrador
+    const sessionUser = await userModel.findOne(userId);
+    if (sessionUser?.role !== 'admin') {
+      return res.status(401).json({
+        message: 'No estás autorizado para realizar esa acción',
+        error: true,
+        success: false,
+      });
+    }
+
+    // Subir las imágenes nuevas
+    let uploadedImages = [];
+    if (newImages?.length > 0) {
+      uploadedImages = await uploadImages(newImages, 'techplanet/products');
+    }
+
+    // Actualizar el producto con las nuevas imágenes
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      id,
       {
-        name,
-        image,
+        $set: {
+          productName,
+          brandName,
+          category,
+          description,
+          price,
+          sellingPrice,
+        },
+        $push: { productImages: { $each: uploadedImages } },
       },
+      { new: true } // Para retornar el producto actualizado
     );
-    return res.status(200).json(data);
+
+
+    if (!updatedProduct) {
+      return res.status(404).json({
+        message: 'Producto no encontrado',
+        error: true,
+        success: false,
+      });
+    }
+
+    // Eliminar las imágenes antiguas que fueron marcadas para eliminación
+    if (deletedImages?.length > 0) {
+      const publicIdsToDelete = deletedImages.map((image) => image.public_id);
+      await deleteFiles(publicIdsToDelete);
+
+      // Remover las imágenes eliminadas del producto
+      await productModel.findByIdAndUpdate(
+        id,
+        {
+          $pull: { productImages: { public_id: { $in: publicIdsToDelete } } },
+        },
+        { new: true }
+      );
+    }
+
+    return res.status(200).json({
+      message: 'Producto actualizado exitosamente',
+      data: updatedProduct,
+      error: false,
+      success: true,
+    });
   } catch (error) {
+    console.error('Error al actualizar el producto:', error);
     return res.status(500).json({
-      code: 500,
-      message: 'Error updating product',
+      message: 'Error al actualizar el producto',
+      error: true,
+      success: false,
     });
   }
 };
+
 
 export const getCategories = async (req, res) => {
   try {
